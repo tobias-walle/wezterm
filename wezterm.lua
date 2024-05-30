@@ -1,5 +1,6 @@
 local wezterm = require("wezterm")
 local act = wezterm.action
+local utils = require("utils")
 
 local config = wezterm.config_builder()
 
@@ -23,21 +24,11 @@ config.keys = {
 	-- Clear Screen & History
 	{ key = "k", mods = "LEADER|CTRL", action = act({ ClearScrollback = "ScrollbackAndViewport" }) },
 
-	-- Move tabs
-	{ key = "h", mods = "LEADER|SHIFT", action = act({ MoveTabRelative = -1 }) },
-	{ key = "l", mods = "LEADER|SHIFT", action = act({ MoveTabRelative = 1 }) },
-
 	-- Navigate panes
 	{ key = "h", mods = "CTRL", action = act.EmitEvent("ActivatePaneDirection-left") },
 	{ key = "j", mods = "CTRL", action = act.EmitEvent("ActivatePaneDirection-down") },
 	{ key = "k", mods = "CTRL", action = act.EmitEvent("ActivatePaneDirection-up") },
 	{ key = "l", mods = "CTRL", action = act.EmitEvent("ActivatePaneDirection-right") },
-
-	-- Resize
-	{ key = "j", mods = "LEADER|SHIFT", action = act({ AdjustPaneSize = { "Down", 5 } }) },
-	{ key = "k", mods = "LEADER|SHIFT", action = act({ AdjustPaneSize = { "Up", 5 } }) },
-	{ key = "l", mods = "LEADER|SHIFT", action = act({ AdjustPaneSize = { "Right", 20 } }) },
-	{ key = "h", mods = "LEADER|SHIFT", action = act({ AdjustPaneSize = { "Left", 20 } }) },
 
 	-- Split Panes
 	{ key = "v", mods = "LEADER", action = act({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
@@ -50,10 +41,6 @@ config.keys = {
 	-- Switch tabs
 	{ key = "l", mods = "CTRL|SHIFT", action = act({ ActivateTabRelative = 1 }) },
 	{ key = "h", mods = "CTRL|SHIFT", action = act({ ActivateTabRelative = -1 }) },
-
-	-- Move tabs
-	{ key = "l", mods = "LEADER|SHIFT", action = act.MoveTabRelative(1) },
-	{ key = "h", mods = "LEADER|SHIFT", action = act.MoveTabRelative(-1) },
 
 	-- Copy mode
 	{ key = "v", mods = "LEADER|CTRL", action = act.ActivateCopyMode },
@@ -82,6 +69,28 @@ config.keys = {
 	{ key = "d", mods = "LEADER|CTRL", action = act.ShowDebugOverlay },
 }
 
+config.key_tables = {}
+
+-- Resize
+utils.add_keys_with_repeat(config, "resize", {
+	{ key = "j", mods = "LEADER|SHIFT", action = act({ AdjustPaneSize = { "Down", 2 } }) },
+	{ key = "k", mods = "LEADER|SHIFT", action = act({ AdjustPaneSize = { "Up", 2 } }) },
+	{ key = "l", mods = "LEADER|SHIFT", action = act({ AdjustPaneSize = { "Right", 10 } }) },
+	{ key = "h", mods = "LEADER|SHIFT", action = act({ AdjustPaneSize = { "Left", 10 } }) },
+})
+
+-- Move Tabs
+utils.add_keys_with_repeat(config, "move tabs", {
+	{ key = "n", mods = "LEADER|SHIFT", action = act({ MoveTabRelative = -1 }) },
+	{ key = "m", mods = "LEADER|SHIFT", action = act({ MoveTabRelative = 1 }) },
+})
+
+-- Rotate panes
+utils.add_keys_with_repeat(config, "rotate panes", {
+	{ key = "r", mods = "LEADER", action = act.RotatePanes("Clockwise") },
+	{ key = "r", mods = "LEADER|CTRL", action = act.RotatePanes("CounterClockwise") },
+})
+
 config.mouse_bindings = {
 	-- Select output of a command with triple click. Doesn't really work at the moment unfortunately.
 	{
@@ -109,6 +118,9 @@ config.hide_tab_bar_if_only_one_tab = false
 config.tab_max_width = 40
 config.show_new_tab_button_in_tab_bar = false
 wezterm.on("format-tab-title", require("config.tab_bar").format_tab_bar)
+
+-- Image Support
+config.enable_kitty_graphics = true
 
 -- Status Bar
 config.status_update_interval = 10000
