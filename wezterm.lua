@@ -58,6 +58,20 @@ config.keys = {
 	{ key = "v", mods = "CMD", action = act({ PasteFrom = "Clipboard" }) },
 	{ key = "v", mods = "CTRL|SHIFT", action = act({ PasteFrom = "Clipboard" }) },
 
+	-- Rename tab
+	{
+		key = "t",
+		mods = "LEADER|CTRL",
+		action = act.PromptInputLine({
+			description = "Enter new name for tab",
+			action = wezterm.action_callback(function(window, pane, line)
+				if line then
+					window:active_tab():set_title(line)
+				end
+			end),
+		}),
+	},
+
 	-- Switch workspaces / sessions
 	{
 		key = "Space",
