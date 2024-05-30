@@ -3,8 +3,10 @@ local M = {}
 local wezterm = require("wezterm")
 local utils = require("utils")
 
-local LEFT_ARROW = utf8.char(0xe0b6)
 local RIGHT_ARROW = utf8.char(0xe0b4)
+local RIGHT_ARROW_THIN = utf8.char(0xe0b5)
+local LEFT_ARROW = utf8.char(0xe0b6)
+local LEFT_ARROW_THIN = utf8.char(0xe0b7)
 
 local get_tab_theme = function(theme, tab)
 	if tab.is_active then
@@ -40,18 +42,20 @@ function M.format_tab_bar(tab, tabs, panes, config, hover, max_width)
 
 	local tab_theme = get_tab_theme(theme, tab)
 
-	local next_tab = tabs[tab.tab_index + 2]
+	local tab_index = tab.tab_index + 1
+	local next_tab = tabs[tab_index + 1]
 	local next_tab_theme = false
 	if next_tab then
 		next_tab_theme = get_tab_theme(theme, next_tab)
 	end
 
+	local show_thin_arrow = not tab.is_active and (not next_tab or not next_tab.is_active)
 	return {
 		{ Background = { Color = tab_theme.bg_color } },
 		{ Text = " " .. title },
 		{ Background = { Color = next_tab_theme and next_tab_theme.bg_color or theme.tab_bar.background } },
-		{ Foreground = { Color = tab_theme.bg_color } },
-		{ Text = RIGHT_ARROW },
+		{ Foreground = { Color = show_thin_arrow and theme.tab_bar.active_tab.bg_color or tab_theme.bg_color } },
+		{ Text = show_thin_arrow and RIGHT_ARROW_THIN or RIGHT_ARROW },
 	}
 end
 
