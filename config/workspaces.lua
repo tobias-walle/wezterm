@@ -1,7 +1,7 @@
 local M = {}
 
 local wezterm = require("wezterm")
-local act = wezterm.actions
+local act = wezterm.action
 
 --- Open a picker to select a preexisting workspace or a configured one
 function M.open_workspace_picker(window, pane)
