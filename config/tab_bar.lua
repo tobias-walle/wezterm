@@ -64,7 +64,7 @@ function M.update_status(window, pane)
 				{ Text = "" },
 				{ Background = { Color = color } },
 				{ Foreground = { Color = theme.tab_bar.background } },
-				{ Text = " " .. icon .. "  " .. text .. " " },
+				{ Text = " " .. icon .. " " .. text .. " " },
 				"ResetAttributes",
 				{ Foreground = { Color = color } },
 				{ Text = "" },
