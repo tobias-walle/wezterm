@@ -2,6 +2,7 @@ local M = {}
 
 local wezterm = require("wezterm")
 local act = wezterm.action
+local sessions = require("plugins.sessions")
 
 --- Open a picker to select a preexisting workspace or a configured one
 function M.open_workspace_picker(window, pane)
@@ -57,17 +58,25 @@ function M.open_workspace_picker(window, pane)
 
 	window:perform_action(
 		act.InputSelector({
-			action = wezterm.action_callback(function(inner_window, inner_pane, id, label)
+			action = wezterm.action_callback(function(window_2, pane_2, id, label)
+				-- First save the current workspaces
+				require("plugins.sessions").save()
+				-- Switch to new workspace
 				if id and label then
-					inner_window:perform_action(
+					window_2:perform_action(
 						act.SwitchToWorkspace({
 							name = id,
 							spawn = {
 								cwd = path_by_workspace[id],
 							},
 						}),
-						inner_pane
+						pane_2
 					)
+					for _, mux_window in ipairs(wezterm.mux.all_windows()) do
+						if mux_window:get_workspace() == id then
+							sessions.restore(mux_window)
+						end
+					end
 				end
 			end),
 			choices = workspaces,
