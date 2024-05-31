@@ -133,10 +133,11 @@ config.scrollback_lines = 50000
 
 -- Fonts
 config.font = wezterm.font_with_fallback({
-	"JetBrains Mono",
-	"Symbols Nerd Font Mono",
-	"Noto Color Emoji",
+	{ family = "JetBrains Mono", weight = "Regular" },
+	{ family = "Symbols Nerd Font Mono", scale = 0.85 },
+	{ family = "Noto Color Emoji" },
 })
+config.use_cap_height_to_scale_fallback_fonts = true
 config.font_size = 15.5 -- Uneven font size is necessary because otherwise there is unwanted space at the bottom
 
 -- Padding
