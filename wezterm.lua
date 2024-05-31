@@ -34,10 +34,6 @@ config.keys = {
 	{ key = "v", mods = "LEADER", action = act({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
 	{ key = "s", mods = "LEADER", action = act({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
 
-	-- Rotate Panes
-	{ key = "r", mods = "LEADER", action = act.RotatePanes("Clockwise") },
-	{ key = "r", mods = "LEADER|CTRL", action = act.RotatePanes("CounterClockwise") },
-
 	-- Switch tabs
 	{ key = "l", mods = "CTRL|SHIFT", action = act({ ActivateTabRelative = 1 }) },
 	{ key = "h", mods = "CTRL|SHIFT", action = act({ ActivateTabRelative = -1 }) },
@@ -89,6 +85,9 @@ config.keys = {
 		mods = "LEADER",
 		action = wezterm.action_callback(require("config.workspaces").open_workspace_picker),
 	},
+	{ key = "s", mods = "LEADER|CTRL", action = wezterm.action({ EmitEvent = "save_session" }) },
+	{ key = "l", mods = "LEADER|CTRL", action = wezterm.action({ EmitEvent = "load_session" }) },
+	{ key = "r", mods = "LEADER|CTRL", action = wezterm.action({ EmitEvent = "restore_session" }) },
 
 	-- Debug
 	{ key = "d", mods = "LEADER|CTRL", action = act.ShowDebugOverlay },
@@ -113,7 +112,6 @@ utils.add_keys_with_repeat(config, "move tabs", {
 -- Rotate panes
 utils.add_keys_with_repeat(config, "rotate panes", {
 	{ key = "r", mods = "LEADER", action = act.RotatePanes("Clockwise") },
-	{ key = "r", mods = "LEADER|CTRL", action = act.RotatePanes("CounterClockwise") },
 })
 
 config.mouse_bindings = {
@@ -163,5 +161,19 @@ wezterm.on("gui-attached", require("config.windows").maximize_window)
 
 -- Plugins
 require("plugins/navigator").configure(config)
+
+local session_manager = require("plugins/session-manager")
+wezterm.on("save_session", function(window)
+	print("SAVE")
+	session_manager.save_state(window)
+end)
+wezterm.on("load_session", function(window)
+	print("LOAD")
+	session_manager.load_state(window)
+end)
+wezterm.on("restore_session", function(window)
+	print("RESTORE")
+	session_manager.restore_state(window)
+end)
 
 return config
