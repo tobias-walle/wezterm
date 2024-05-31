@@ -3,11 +3,6 @@ local M = {}
 local wezterm = require("wezterm")
 local utils = require("utils")
 
-local RIGHT_ARROW = utf8.char(0xe0b4)
-local RIGHT_ARROW_THIN = utf8.char(0xe0b5)
-local LEFT_ARROW = utf8.char(0xe0b6)
-local LEFT_ARROW_THIN = utf8.char(0xe0b7)
-
 local get_tab_theme = function(theme, tab)
 	if tab.is_active then
 		return theme.tab_bar.active_tab
@@ -35,42 +30,44 @@ function M.format_tab_bar(tab, tabs, panes, config, hover, max_width)
 
 	-- Right align title
 	local original_len = title:len()
-	title = title:sub(-(max_width - 2))
+	title = title:sub(-(max_width - 5))
 	if title:len() < original_len then
 		title = "…" .. title:sub(1)
 	end
 
 	local tab_theme = get_tab_theme(theme, tab)
 
-	local tab_index = tab.tab_index + 1
-	local next_tab = tabs[tab_index + 1]
-	local next_tab_theme = false
-	if next_tab then
-		next_tab_theme = get_tab_theme(theme, next_tab)
-	end
-
-	local show_thin_arrow = not tab.is_active and (not next_tab or not next_tab.is_active)
 	return {
 		{ Background = { Color = tab_theme.bg_color } },
-		{ Text = " " .. title },
-		{ Background = { Color = next_tab_theme and next_tab_theme.bg_color or theme.tab_bar.background } },
-		{ Foreground = { Color = show_thin_arrow and theme.tab_bar.active_tab.bg_color or tab_theme.bg_color } },
-		{ Text = show_thin_arrow and RIGHT_ARROW_THIN or RIGHT_ARROW },
+		{ Foreground = { Color = tab_theme.fg_color } },
+		{ Text = " " .. title .. " " },
+		{ Background = { Color = tab_theme.bg_color } },
+		{ Foreground = { Color = tab_theme.fg_color } },
+		{ Text = "" },
+		{ Foreground = { Color = tab_theme.bg_color } },
+		{ Background = { Color = tab_theme.fg_color } },
+		{ Text = "" .. tab.tab_index },
+		{ Background = { Color = tab_theme.bg_color } },
+		{ Foreground = { Color = tab_theme.fg_color } },
+		{ Text = "" },
 	}
 end
 
 -- Status Bar
 function M.update_status(window, pane)
 	local theme = require("config.theme").theme
-	local format_section = function(text, bg_color, fg_color)
+	local colors = require("config.theme").colors
+	local format_section = function(icon, text, color)
 		if text then
 			return {
-				{ Foreground = { Color = bg_color } },
-				{ Text = LEFT_ARROW },
-				{ Background = { Color = bg_color } },
-				{ Foreground = { Color = fg_color } },
-				{ Text = text },
-				{ Text = " " },
+				{ Foreground = { Color = color } },
+				{ Text = "" },
+				{ Background = { Color = color } },
+				{ Foreground = { Color = theme.tab_bar.background } },
+				{ Text = " " .. icon .. "  " .. text .. " " },
+				"ResetAttributes",
+				{ Foreground = { Color = color } },
+				{ Text = "" },
 			}
 		else
 			return {}
@@ -80,14 +77,14 @@ function M.update_status(window, pane)
 	local active_key_table = window:active_key_table()
 
 	local cwd = pane:get_current_working_dir()
-	local cwd_path = cwd and cwd.path or "<unknown>"
+	local cwd_path = cwd and utils.replace_home(cwd.path) or "<unknown>"
 
 	local workspace = window:active_workspace()
 
 	window:set_right_status(wezterm.format(utils.flatten({
-		format_section(active_key_table, theme.tab_bar.inactive_tab.bg_color, theme.tab_bar.inactive_tab.fg_color),
-		format_section(cwd_path, theme.ansi[1], theme.tab_bar.inactive_tab.fg_color),
-		format_section(workspace, theme.tab_bar.active_tab.bg_color, theme.tab_bar.active_tab.fg_color),
+		format_section("", active_key_table, colors.flamingo),
+		format_section("", cwd_path, colors.teal),
+		format_section("", workspace, colors.mauve),
 	})))
 end
 
