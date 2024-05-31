@@ -5,7 +5,7 @@ local utils = require("utils")
 local config = wezterm.config_builder()
 
 -- Theme
-config.color_scheme = require("config.theme").theme_name
+require("config.theme").configure_theme(config, "Catppuccin Mocha")
 
 -- Key bindings
 config.leader = { key = "Space", mods = "CTRL" }
@@ -42,9 +42,6 @@ config.keys = {
 	{ key = "l", mods = "CTRL|SHIFT", action = act({ ActivateTabRelative = 1 }) },
 	{ key = "h", mods = "CTRL|SHIFT", action = act({ ActivateTabRelative = -1 }) },
 
-	-- Copy mode
-	{ key = "v", mods = "LEADER|CTRL", action = act.ActivateCopyMode },
-
 	-- Scrolling
 	{ key = "PageUp", mods = "SHIFT", action = act({ ScrollByPage = -1 }) },
 	{ key = "PageDown", mods = "SHIFT", action = act({ ScrollByPage = 1 }) },
@@ -53,10 +50,20 @@ config.keys = {
 	{ key = "Backspace", mods = "CTRL", action = act.ResetFontSize },
 
 	-- Clipboard
+	{ key = "v", mods = "LEADER|CTRL", action = act.ActivateCopyMode },
 	{ key = "c", mods = "CMD", action = act({ CopyTo = "Clipboard" }) },
 	{ key = "c", mods = "CTRL|SHIFT", action = act({ CopyTo = "Clipboard" }) },
 	{ key = "v", mods = "CMD", action = act({ PasteFrom = "Clipboard" }) },
 	{ key = "v", mods = "CTRL|SHIFT", action = act({ PasteFrom = "Clipboard" }) },
+	{
+		key = "Tab",
+		mods = "LEADER",
+		action = wezterm.action_callback(require("config.clipboard").copy_last_output_to_clipboard),
+	},
+
+	-- Scroll to earlier prompts
+	{ key = "UpArrow", mods = "CMD", action = act.ScrollToPrompt(-1) },
+	{ key = "DownArrow", mods = "CMD", action = act.ScrollToPrompt(1) },
 
 	-- Rename tab
 	{
@@ -71,6 +78,10 @@ config.keys = {
 			end),
 		}),
 	},
+
+	-- Quick select
+	{ key = "s", mods = "CMD", action = act.QuickSelect },
+	{ key = "s", mods = "CTRL|SHIFT", action = act.QuickSelect },
 
 	-- Switch workspaces / sessions
 	{
@@ -118,11 +129,17 @@ config.mouse_bindings = {
 config.quit_when_all_windows_are_closed = true
 
 -- History limit
-config.scrollback_lines = 10000
+config.scrollback_lines = 50000
 
 -- Fonts
-config.font = wezterm.font("JetBrains Mono")
+config.font = wezterm.font_with_fallback({
+	"JetBrains Mono",
+	"Symbols Nerd Font Mono",
+	"Noto Color Emoji",
+})
 config.font_size = 15.5 -- Uneven font size is necessary because otherwise there is unwanted space at the bottom
+
+-- Padding
 config.window_padding = { top = 0, left = 0, right = 0, bottom = 0 }
 
 -- Tab Bar

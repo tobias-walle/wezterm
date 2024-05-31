@@ -84,4 +84,12 @@ function utils.add_keys_with_repeat(config, keytable_name, keys)
 	end
 end
 
+---Remove trailing and leading whitespace from string
+---@param str string
+---@return string
+function utils.trim(str)
+	local result = string.gsub(str, "^%s*(.-)%s*$", "%1")
+	return result
+end
+
 return utils
