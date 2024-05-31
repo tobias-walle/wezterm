@@ -11,8 +11,7 @@ local get_tab_theme = function(theme, tab)
 	end
 end
 
-function M.format_tab_bar(tab, tabs, panes, config, hover)
-	local theme = require("config.theme").theme
+local function get_tab_title(tab)
 	local title = tab.tab_title
 
 	-- if the tab title not explicitly set, set default
@@ -21,12 +20,15 @@ function M.format_tab_bar(tab, tabs, panes, config, hover)
 			-- Show last two segments of a path, e.g. if the path is "/Users/test/projects/my-project" => "projects/my-project"
 			local current_path = utils.replace_home(tab.active_pane.current_working_dir.path)
 			local current_folder = string.match(current_path, [[([^/]*/?[^/]+)$]])
-			title = current_folder
+			return current_folder
 		end
 	end
-	if not title then
-		title = tab.active_pane.title
-	end
+	return tab.active_pane.title
+end
+
+function M.format_tab_bar(tab, tabs, panes, config, hover)
+	local theme = require("config.theme").theme
+	local title = get_tab_title(tab)
 
 	-- Right align title
 	local original_len = title:len()
@@ -86,6 +88,21 @@ function M.update_status(window, pane)
 		format_section("", cwd_path, colors.teal),
 		format_section("", workspace, colors.mauve),
 	})))
+end
+
+-- Window title
+function M.format_window_title(tab, pane, tabs, panes, config)
+	local zoomed = ""
+	if tab.active_pane.is_zoomed then
+		zoomed = "[Z] "
+	end
+
+	local index = ""
+	if #tabs > 1 then
+		index = string.format("[%d/%d] ", tab.tab_index + 1, #tabs)
+	end
+
+	return zoomed .. index .. get_tab_title(tab) .. " (" .. wezterm.mux.get_active_workspace() .. ")"
 end
 
 return M

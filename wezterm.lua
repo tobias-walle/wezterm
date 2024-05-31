@@ -144,6 +144,7 @@ config.font_size = 15.5 -- Uneven font size is necessary because otherwise there
 
 -- Window options
 config.window_padding = { top = 0, left = 0, right = 0, bottom = 0 }
+wezterm.on("format-window-title", require("config.tab_bar").format_window_title)
 
 -- Maximize on start
 config.initial_rows = 1000

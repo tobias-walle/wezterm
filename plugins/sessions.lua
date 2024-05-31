@@ -42,6 +42,7 @@ local function retrieve_workspace_data(mux_window)
 				pixel_height = pane_info.pixel_height,
 				cwd = pane_info.pane:get_current_working_dir().path,
 				tty = tostring(pane_info.pane:get_foreground_process_name()),
+				user_vars = pane_info.pane:get_user_vars(),
 			})
 		end
 
@@ -129,8 +130,12 @@ local function recreate_workspace(mux_window, workspace_data)
 				})
 			end
 
-			if not new_pane then
-				wezterm.log_info("Failed to create a new pane.")
+			if new_pane then
+				if pane_data.user_vars and pane_data.user_vars["WEZTERM_PROG"] then
+					new_pane:send_text(pane_data.user_vars["WEZTERM_PROG"] .. "\n")
+				end
+			else
+				wezterm.log_error("Failed to create a new pane.")
 				break
 			end
 		end
@@ -186,8 +191,6 @@ function M.restore(mux_window)
 	if recreate_workspace(mux_window, workspace_data) then
 		wezterm.log_info("Workspace state loaded for workspace: " .. workspace_name)
 		already_restored[workspace_name] = true
-	else
-		notify("WezTerm", "Workspace state loading failed for workspace: " .. workspace_name)
 	end
 end
 
