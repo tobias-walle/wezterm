@@ -11,7 +11,7 @@ local get_tab_theme = function(theme, tab)
 	end
 end
 
-function M.format_tab_bar(tab, tabs, panes, config, hover, max_width)
+function M.format_tab_bar(tab, tabs, panes, config, hover)
 	local theme = require("config.theme").theme
 	local title = tab.tab_title
 
@@ -30,7 +30,7 @@ function M.format_tab_bar(tab, tabs, panes, config, hover, max_width)
 
 	-- Right align title
 	local original_len = title:len()
-	title = title:sub(-(max_width - 5))
+	title = title:sub(-(config.tab_max_width - 6))
 	if title:len() < original_len then
 		title = "…" .. title:sub(1)
 	end

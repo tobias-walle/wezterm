@@ -19,7 +19,14 @@ config.keys = {
 	-- Close stuff
 	{ key = "x", mods = "LEADER", action = act({ CloseCurrentPane = { confirm = true } }) },
 	{ key = "x", mods = "LEADER|CTRL", action = act({ CloseCurrentTab = { confirm = true } }) },
-	{ key = "q", mods = "LEADER|CTRL", action = act.QuitApplication },
+	{
+		key = "q",
+		mods = "LEADER|CTRL",
+		action = act.Multiple({
+			require("plugins.sessions").action_save,
+			act.QuitApplication,
+		}),
+	},
 
 	-- Clear Screen & History
 	{ key = "k", mods = "LEADER|CTRL", action = act({ ClearScrollback = "ScrollbackAndViewport" }) },
@@ -85,9 +92,6 @@ config.keys = {
 		mods = "LEADER",
 		action = wezterm.action_callback(require("config.workspaces").open_workspace_picker),
 	},
-	{ key = "s", mods = "LEADER|CTRL", action = wezterm.action({ EmitEvent = "save_session" }) },
-	{ key = "l", mods = "LEADER|CTRL", action = wezterm.action({ EmitEvent = "load_session" }) },
-	{ key = "r", mods = "LEADER|CTRL", action = wezterm.action({ EmitEvent = "restore_session" }) },
 
 	-- Debug
 	{ key = "d", mods = "LEADER|CTRL", action = act.ShowDebugOverlay },
@@ -138,13 +142,17 @@ config.font = wezterm.font_with_fallback({
 config.use_cap_height_to_scale_fallback_fonts = true
 config.font_size = 15.5 -- Uneven font size is necessary because otherwise there is unwanted space at the bottom
 
--- Padding
+-- Window options
 config.window_padding = { top = 0, left = 0, right = 0, bottom = 0 }
+
+-- Maximize on start
+config.initial_rows = 1000
+config.initial_cols = 1000
 
 -- Tab Bar
 config.use_fancy_tab_bar = false
 config.tab_bar_at_bottom = true
-config.hide_tab_bar_if_only_one_tab = false
+config.hide_tab_bar_if_only_one_tab = true
 config.tab_max_width = 40
 config.show_new_tab_button_in_tab_bar = false
 wezterm.on("format-tab-title", require("config.tab_bar").format_tab_bar)
@@ -156,24 +164,27 @@ config.enable_kitty_graphics = true
 config.status_update_interval = 10000
 wezterm.on("update-status", require("config.tab_bar").update_status)
 
--- Maximize terminal initially
-wezterm.on("gui-attached", require("config.windows").maximize_window)
+-- Restore sessions
+wezterm.on("gui-startup", function(cmd)
+	if not cmd then
+		local _, _, window = wezterm.mux.spawn_window({})
+		require("plugins.sessions").restore(window)
+	else
+		require("plugins.sessions").disable_save()
+		wezterm.mux.spawn_window(cmd)
+	end
+end)
+
+-- Save sessions every minute
+wezterm.time.call_after(60, function()
+	require("plugins.sessions").save()
+end)
 
 -- Plugins
 require("plugins/navigator").configure(config)
 
-local session_manager = require("plugins/session-manager")
-wezterm.on("save_session", function(window)
-	print("SAVE")
-	session_manager.save_state(window)
-end)
-wezterm.on("load_session", function(window)
-	print("LOAD")
-	session_manager.load_state(window)
-end)
-wezterm.on("restore_session", function(window)
-	print("RESTORE")
-	session_manager.restore_state(window)
+wezterm.on("window-focus-changed", function(window, pane)
+	wezterm.log_info("the focus state of ", window:window_id(), " changed to ", window:is_focused())
 end)
 
 return config
