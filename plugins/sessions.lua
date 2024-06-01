@@ -171,14 +171,15 @@ local function load_from_json_file(file_path)
 	return data
 end
 
-local already_restored = {}
-
 function M.restore(mux_window)
 	local workspace_name = mux_window:get_workspace()
-	if already_restored[workspace_name] then
+
+	wezterm.GLOBAL.already_restored = wezterm.GLOBAL.already_restored or {}
+	if wezterm.GLOBAL.already_restored[workspace_name] then
 		wezterm.log_info("Workspace " .. workspace_name .. " already restored. Skip...")
 		return
 	end
+
 	local file_path = wezterm.home_dir .. "/.config/wezterm/sessions/" .. workspace_name .. ".json"
 
 	local workspace_data = load_from_json_file(file_path)
@@ -189,7 +190,7 @@ function M.restore(mux_window)
 
 	if recreate_workspace(mux_window, workspace_data) then
 		wezterm.log_info("Workspace state loaded for workspace: " .. workspace_name)
-		already_restored[workspace_name] = true
+		wezterm.GLOBAL.already_restored[workspace_name] = true
 	end
 end
 

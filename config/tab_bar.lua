@@ -13,15 +13,16 @@ end
 
 local function get_tab_title(tab)
 	local title = tab.tab_title
+	if title and title ~= "" then
+		return title
+	end
 
 	-- if the tab title not explicitly set, set default
-	if not title or #title == 0 then
-		if tab.active_pane.current_working_dir then
-			-- Show last two segments of a path, e.g. if the path is "/Users/test/projects/my-project" => "projects/my-project"
-			local current_path = utils.replace_home(tab.active_pane.current_working_dir.path)
-			local current_folder = string.match(current_path, [[([^/]*/?[^/]+)$]])
-			return current_folder
-		end
+	if tab.active_pane.current_working_dir then
+		-- Show last two segments of a path, e.g. if the path is "/Users/test/projects/my-project" => "projects/my-project"
+		local current_path = utils.replace_home(tab.active_pane.current_working_dir.path)
+		local current_folder = string.match(current_path, [[([^/]*/?[^/]+)$]])
+		return current_folder
 	end
 	return tab.active_pane.title
 end
