@@ -93,6 +93,13 @@ config.keys = {
 		action = wezterm.action_callback(require("config.workspaces").open_workspace_picker),
 	},
 
+	-- Show command palette
+	{
+		key = "p",
+		mods = "LEADER|CTRL",
+		action = wezterm.action.ActivateCommandPalette,
+	},
+
 	-- Debug
 	{ key = "d", mods = "LEADER|CTRL", action = act.ShowDebugOverlay },
 }
