@@ -92,4 +92,11 @@ function utils.trim(str)
 	return result
 end
 
+--- Show a desktop notification
+---@param title string
+---@param message string
+function utils.notify(title, message)
+	wezterm.gui.gui_windows()[1]:toast_notification(title, message, nil, 3000)
+end
+
 return utils
