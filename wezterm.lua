@@ -127,11 +127,11 @@ config.mouse_bindings = {
 	},
 }
 
--- Quit when all windows are closed
-config.quit_when_all_windows_are_closed = true
-
--- History limit
+-- General options
+config.quit_when_all_windows_are_closed = false
 config.scrollback_lines = 50000
+config.initial_rows = 45
+config.initial_cols = 170
 
 -- Fonts
 config.font = wezterm.font_with_fallback({
@@ -145,10 +145,6 @@ config.font_size = 15.5 -- Uneven font size is necessary because otherwise there
 -- Window options
 config.window_padding = { top = 0, left = 0, right = 0, bottom = 0 }
 wezterm.on("format-window-title", require("config.tab_bar").format_window_title)
-
--- Maximize on start
-config.initial_rows = 1000
-config.initial_cols = 1000
 
 -- Tab Bar
 config.use_fancy_tab_bar = false
