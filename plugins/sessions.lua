@@ -49,7 +49,6 @@ local function retrieve_workspace_data(mux_window)
 		table.insert(workspace_data.tabs, tab_data)
 	end
 
-	print(workspace_data)
 	return workspace_data
 end
 
