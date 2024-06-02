@@ -213,12 +213,12 @@ function M.save()
 
 		-- Save the workspace data to a JSON file and display the appropriate notification
 		if not save_to_json_file(data, file_path) then
-			notify("WezTerm Session Manager", "Failed to save workspace " .. workspace_name)
+			notify("WezTerm", "Failed to save session " .. workspace_name)
 			return
 		end
 	end
 
-	wezterm.log_info("WezTerm Session Manager", "Workspaces saved successfully")
+	wezterm.log_info("Session saved successfully")
 end
 
 M.action_save = wezterm.action_callback(function()
