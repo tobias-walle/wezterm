@@ -100,10 +100,10 @@ function M.format_window_title(tab, pane, tabs, panes, config)
 
 	local index = ""
 	if #tabs > 1 then
-		index = string.format("[%d/%d] ", tab.tab_index + 1, #tabs)
+		index = string.format(" %d/%d", tab.tab_index + 1, #tabs)
 	end
 
-	return zoomed .. index .. get_tab_title(tab) .. " (" .. wezterm.mux.get_active_workspace() .. ")"
+	return zoomed .. get_tab_title(tab) .. " [" .. wezterm.mux.get_active_workspace() .. index .. "]"
 end
 
 return M

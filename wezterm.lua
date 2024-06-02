@@ -180,9 +180,13 @@ wezterm.on("gui-startup", function(cmd)
 end)
 
 -- Save sessions every minute
-wezterm.time.call_after(60, function()
-	require("plugins.sessions").save()
-end)
+local function save_sessions_in_interval()
+	wezterm.time.call_after(60, function()
+		require("plugins.sessions").save()
+		save_sessions_in_interval()
+	end)
+end
+save_sessions_in_interval()
 
 -- Plugins
 require("plugins/navigator").configure(config)
