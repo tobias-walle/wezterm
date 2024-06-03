@@ -131,7 +131,7 @@ local function recreate_workspace(mux_window, workspace_data)
 
 			if new_pane then
 				if pane_data.user_vars and pane_data.user_vars["WEZTERM_PROG"] then
-					new_pane:send_text(pane_data.user_vars["WEZTERM_PROG"] .. "\n")
+					new_pane:send_text(pane_data.user_vars["WEZTERM_PROG"])
 				end
 			else
 				wezterm.log_error("Failed to create a new pane.")
