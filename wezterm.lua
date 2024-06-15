@@ -147,7 +147,7 @@ config.font = wezterm.font_with_fallback({
 	{ family = "Noto Color Emoji" },
 })
 config.use_cap_height_to_scale_fallback_fonts = true
-config.font_size = 15.5 -- Uneven font size is necessary because otherwise there is unwanted space at the bottom
+config.font_size = 13.3 -- Uneven font size is necessary because otherwise there is unwanted space at the bottom
 
 -- Window options
 config.window_padding = { top = 0, left = 0, right = 0, bottom = 0 }
