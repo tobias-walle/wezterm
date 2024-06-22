@@ -161,6 +161,10 @@ config.quit_when_all_windows_are_closed = false
 config.scrollback_lines = 50000
 config.initial_rows = 45
 config.initial_cols = 170
+-- config.enable_kitty_keyboard = true
+-- config.enable_csi_u_key_encoding = false
+-- config.send_composed_key_when_left_alt_is_pressed = true
+-- config.send_composed_key_when_right_alt_is_pressed = true
 
 -- Fonts
 config.font = wezterm.font_with_fallback({
