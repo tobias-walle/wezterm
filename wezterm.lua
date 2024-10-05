@@ -9,6 +9,7 @@ require("config.theme").configure_theme(config, "Catppuccin Mocha")
 
 -- Key bindings
 config.leader = { key = "Space", mods = "CTRL" }
+config.disable_default_key_bindings = true
 config.keys = {
 	-- Create tab
 	{ key = "c", mods = "LEADER", action = act({ SpawnTab = "CurrentPaneDomain" }) },
@@ -123,6 +124,12 @@ utils.add_keys_with_repeat(config, "move tabs", {
 -- Rotate panes
 utils.add_keys_with_repeat(config, "rotate panes", {
 	{ key = "r", mods = "LEADER", action = act.RotatePanes("Clockwise") },
+})
+
+-- Scroll
+utils.add_keys_with_repeat(config, "scroll", {
+	{ key = "u", mods = "LEADER|CTRL", action = act.ScrollByPage(-0.5) },
+	{ key = "d", mods = "LEADER|CTRL", action = act.ScrollByPage(0.5) },
 })
 
 config.mouse_bindings = {
