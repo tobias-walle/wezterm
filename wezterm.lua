@@ -6,6 +6,10 @@ local config = wezterm.config_builder()
 
 -- Theme
 require("config.theme").configure_theme(config, "Catppuccin Mocha")
+config.inactive_pane_hsb = {
+	saturation = 0.8,
+	brightness = 0.7,
+}
 
 -- Key bindings
 config.leader = { key = "Space", mods = "CTRL" }
@@ -52,6 +56,8 @@ config.keys = {
 
 	-- Font size adjustments
 	{ key = "Backspace", mods = "CTRL", action = act.ResetFontSize },
+	{ key = "+", mods = "CMD|SHIFT", action = act.IncreaseFontSize },
+	{ key = "-", mods = "CMD|SHIFT", action = act.DecreaseFontSize },
 
 	-- Clipboard
 	{ key = "v", mods = "LEADER|CTRL", action = act.ActivateCopyMode },
