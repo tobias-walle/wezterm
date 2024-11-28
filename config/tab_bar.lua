@@ -12,19 +12,25 @@ local get_tab_theme = function(theme, tab)
 end
 
 local function get_tab_title(tab)
-	local title = tab.tab_title
-	if title and title ~= "" then
-		return title
-	end
+	local title = tab.tab_title or ""
 
 	-- if the tab title not explicitly set, set default
-	if tab.active_pane.current_working_dir then
-		-- Show last two segments of a path, e.g. if the path is "/Users/test/projects/my-project" => "projects/my-project"
-		local current_path = utils.replace_home(tab.active_pane.current_working_dir.path)
-		local current_folder = string.match(current_path, [[([^/]*/?[^/]+)$]])
-		return current_folder
+	if title == "" then
+		if tab.active_pane.current_working_dir then
+			-- Show last two segments of a path, e.g. if the path is "/Users/test/projects/my-project" => "projects/my-project"
+			local current_path = utils.replace_home(tab.active_pane.current_working_dir.path)
+			local current_folder = string.match(current_path, [[([^/]*/?[^/]+)$]])
+			title = current_folder
+		else
+			title = tab.active_pane.title
+		end
 	end
-	return tab.active_pane.title
+
+	if tab.active_pane.is_zoomed then
+		title = title .. " 🔍"
+	end
+
+	return title
 end
 
 function M.format_tab_bar(tab, tabs, panes, config, hover)
