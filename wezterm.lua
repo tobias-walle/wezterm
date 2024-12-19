@@ -16,7 +16,8 @@ config.leader = { key = "Space", mods = "CTRL" }
 config.disable_default_key_bindings = true
 config.keys = {
 	-- Create tab
-	{ key = "c", mods = "LEADER", action = act({ SpawnTab = "CurrentPaneDomain" }) },
+	{ key = "c", mods = "LEADER", action = wezterm.action_callback(require("config.tab").create_tab_next_to_current) },
+	{ key = "c", mods = "LEADER|CTRL", action = act({ SpawnTab = "CurrentPaneDomain" }) },
 
 	-- Zoom into split
 	{ key = "z", mods = "LEADER", action = act.TogglePaneZoomState },
@@ -108,7 +109,7 @@ config.keys = {
 	},
 
 	-- Debug
-	{ key = "d", mods = "LEADER|CTRL", action = act.ShowDebugOverlay },
+	{ key = "d", mods = "LEADER|SHIFT", action = act.ShowDebugOverlay },
 }
 
 config.key_tables = {}
@@ -123,8 +124,8 @@ utils.add_keys_with_repeat(config, "resize", {
 
 -- Move Tabs
 utils.add_keys_with_repeat(config, "move tabs", {
-	{ key = "n", mods = "LEADER|SHIFT", action = act({ MoveTabRelative = -1 }) },
-	{ key = "m", mods = "LEADER|SHIFT", action = act({ MoveTabRelative = 1 }) },
+	{ key = "n", mods = "LEADER", action = act({ MoveTabRelative = -1 }) },
+	{ key = "m", mods = "LEADER", action = act({ MoveTabRelative = 1 }) },
 })
 
 -- Rotate panes
