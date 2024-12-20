@@ -191,6 +191,7 @@ config.font_size = 13.3 -- Uneven font size is necessary because otherwise there
 
 -- Window options
 config.window_padding = { top = 0, left = 0, right = 0, bottom = 0 }
+config.max_fps = 144
 wezterm.on("format-window-title", require("config.tab_bar").format_window_title)
 
 -- Tab Bar
