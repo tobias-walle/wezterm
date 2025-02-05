@@ -46,6 +46,16 @@ config.keys = {
 	-- Split Panes
 	{ key = "v", mods = "LEADER", action = act({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
 	{ key = "s", mods = "LEADER", action = act({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
+	{
+		key = "v",
+		mods = "LEADER|CTRL",
+		action = wezterm.action.SplitPane({ direction = "Right", size = { Percent = 50 }, top_level = true }),
+	},
+	{
+		key = "s",
+		mods = "LEADER|CTRL",
+		action = wezterm.action.SplitPane({ direction = "Down", size = { Percent = 50 }, top_level = true }),
+	},
 
 	-- Switch tabs
 	{ key = "l", mods = "CTRL|SHIFT", action = act({ ActivateTabRelative = 1 }) },
