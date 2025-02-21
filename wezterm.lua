@@ -34,6 +34,9 @@ config.keys = {
 		}),
 	},
 
+	-- Find stuff
+	{ key = "f", mods = "LEADER", action = act.Search({ CaseSensitiveString = "" }) },
+
 	-- Clear Screen & History
 	{ key = "k", mods = "LEADER|CTRL", action = act({ ClearScrollback = "ScrollbackAndViewport" }) },
 
